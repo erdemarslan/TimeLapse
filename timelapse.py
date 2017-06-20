@@ -37,7 +37,7 @@ def main():
         ssh = copy_to_server(server='192.168.8.111')
         scp = SCPClient(ssh.get_transport())
         scp.put(files=local_file_path, remote_path='/media/Kratos/Timelapse')
-        # Remove file from the app's temp storage
+        # Remove file from the app's temp torage
         os.remove(local_file_path)
         x += 1
         time.sleep(5)
