@@ -11,7 +11,7 @@ import gphoto2 as gp
 
 def main():
     x = 0
-    while x < 5:
+    while x < 50:
         logging.basicConfig(
             format='%(levelname)s: %(name)s: %(message)s', level=logging.WARNING)
         gp.check_result(gp.use_python_logging())
@@ -45,7 +45,7 @@ def main():
             # Remove file from the app's temp torage
             os.remove(local_file_path)
             x += 1
-            time.sleep(5)
+            time.sleep(2)
 
 
 def copy_to_server(server='192.168.8.111', port=22, user='root', password='libreelec'):
