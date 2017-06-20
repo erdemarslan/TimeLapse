@@ -27,6 +27,7 @@ def main():
             os.makedirs(local_pics_directory)
         local_file_path = 'pics/' + file_path.name
         target = os.path.join(os.getcwd(), local_file_path)
+        print('Attempt number ' + str(x))
         print('Copying image to', target)
         camera_file = gp.check_result(gp.gp_camera_file_get(
                 camera, file_path.folder, file_path.name,
@@ -41,10 +42,10 @@ def main():
         except:
             print('server not connected')
             pass
-        # Remove file from the app's temp torage
-        os.remove(local_file_path)
-        x += 1
-        time.sleep(5)
+            # Remove file from the app's temp torage
+            os.remove(local_file_path)
+            x += 1
+            time.sleep(5)
 
 
 def copy_to_server(server='192.168.8.111', port=22, user='root', password='libreelec'):
