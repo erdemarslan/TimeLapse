@@ -34,9 +34,13 @@ def main():
         gp.check_result(gp.gp_file_save(camera_file, target))
         gp.check_result(gp.gp_camera_exit(camera, context))
         # Send files to the server
-        ssh = copy_to_server(server='192.168.8.111')
-        scp = SCPClient(ssh.get_transport())
-        scp.put(files=local_file_path, remote_path='/media/Kratos/Timelapse')
+        try:
+            ssh = copy_to_server(server='192.168.8.111')
+            scp = SCPClient(ssh.get_transport())
+            scp.put(files=local_file_path, remote_path='/media/Kratos/Timelapse')
+        except:
+            print('server not connected')
+            pass
         # Remove file from the app's temp torage
         os.remove(local_file_path)
         x += 1
