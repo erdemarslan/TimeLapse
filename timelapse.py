@@ -1,5 +1,5 @@
 from __future__ import print_function
-
+import argparse
 import logging
 import os
 import paramiko
@@ -10,8 +10,22 @@ import gphoto2 as gp
 
 
 def main():
-    x = 0
-    while x < 50:
+    parser = argparse.ArgumentParser(description='Timelapse app')
+    parser.add_argument('-n', '--num_of_shots', help='Number of shots to take', required=False)
+    parser.add_argument('-t', '--sleep_time', help='Time between shots', required=False)
+    args = vars(parser.parse_args())
+    if len(args['num_of_shots']):
+        num_of_shots = args['num_of_shots']
+        print('The number of shots is: ' + str(num_of_shots))
+    else:
+        num_of_shots = 1
+    if len(args['sleep_time']):
+        sleep_time = args['sleep_time']
+        print('The sleep time is: ' + str(sleep_time))
+    else:
+        sleep_time = 5
+    x = 1
+    while x < num_of_shots:
         logging.basicConfig(
             format='%(levelname)s: %(name)s: %(message)s', level=logging.WARNING)
         gp.check_result(gp.use_python_logging())
@@ -37,15 +51,16 @@ def main():
         # Send files to the server
         try:
             ssh = copy_to_server(server='192.168.8.111')
+            print('Copying image to the server')
             scp = SCPClient(ssh.get_transport())
             scp.put(files=local_file_path, remote_path='/media/Kratos/Timelapse')
+            os.remove(local_file_path)
         except:
             print('server not connected')
             pass
             # Remove file from the app's temp torage
-            os.remove(local_file_path)
-            x += 1
-            time.sleep(2)
+        x += 1
+        time.sleep(sleep_time)
 
 
 def copy_to_server(server='192.168.8.111', port=22, user='root', password='libreelec'):
