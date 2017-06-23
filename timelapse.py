@@ -13,17 +13,28 @@ def main():
     parser = argparse.ArgumentParser(description='Timelapse app')
     parser.add_argument('-n', '--num_of_shots', help='Number of shots to take', required=False)
     parser.add_argument('-t', '--sleep_time', help='Time between shots', required=False)
+    parser.add_argument('-s', '--send_to_server', help='Whether use the server. Y or N', required=False)
     args = vars(parser.parse_args())
-    if len(args['num_of_shots']):
+    if args['num_of_shots']:
         num_of_shots = args['num_of_shots']
         print('The number of shots is: ' + str(num_of_shots))
     else:
-        num_of_shots = 1
-    if len(args['sleep_time']):
+        num_of_shots = 10
+    if args['sleep_time']:
         sleep_time = args['sleep_time']
         print('The sleep time is: ' + str(sleep_time))
     else:
         sleep_time = 5
+        print('The sleep time is: ' + str(sleep_time))
+    if args['send_to_server']:
+        send_to_server = args['send_to_server']
+        if send_to_server == 'y':
+            print('The files will be sent to the server')
+        else:
+            print('The files will not be sent to the server')
+    else:
+        send_to_server = 'n'
+        print('The files will not be sent to the server')
     x = 1
     while x < num_of_shots:
         logging.basicConfig(
@@ -49,15 +60,18 @@ def main():
         gp.check_result(gp.gp_file_save(camera_file, target))
         gp.check_result(gp.gp_camera_exit(camera, context))
         # Send files to the server
-        try:
-            ssh = copy_to_server(server='192.168.8.111')
-            print('Copying image to the server')
-            scp = SCPClient(ssh.get_transport())
-            scp.put(files=local_file_path, remote_path='/media/Kratos/Timelapse')
-            os.remove(local_file_path)
-        except:
-            print('server not connected')
-            pass
+        if send_to_server == 'y':
+            try:
+                ssh = copy_to_server(server='192.168.8.111')
+                print('Copying image to the server')
+                scp = SCPClient(ssh.get_transport())
+                scp.put(files=local_file_path, remote_path='/media/Kratos/Timelapse')
+                os.remove(local_file_path)
+            except:
+                print('server not connected')
+                pass
+        else:
+            print('Files are not being sent to the server')
             # Remove file from the app's temp torage
         x += 1
         time.sleep(float(sleep_time))
