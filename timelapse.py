@@ -60,7 +60,7 @@ def main():
             pass
             # Remove file from the app's temp torage
         x += 1
-        time.sleep(sleep_time)
+        time.sleep(float(sleep_time))
 
 
 def copy_to_server(server='192.168.8.111', port=22, user='root', password='libreelec'):
